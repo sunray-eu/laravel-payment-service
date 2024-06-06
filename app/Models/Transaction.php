@@ -9,7 +9,17 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'amount', 'currency', 'provider', 'user_id', 'status',
+        'amount',
+        'currency',
+        'provider',
+        'user_id',
+        'status',
+        'payment_link'
     ];
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('provider');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('status');
+            $table->string('payment_link');
             $table->timestamps();
         });
     }

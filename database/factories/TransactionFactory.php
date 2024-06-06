@@ -18,11 +18,13 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'amount' => $this->faker->randomFloat(2, 10, 1000),
+            'amount' => $this->faker->randomFloat(2, 1, 1000),
             'currency' => $this->faker->currencyCode,
-            'provider' => $this->faker->randomElement(['provider1', 'provider2']),
+            'provider' => $this->faker->randomElement(['paypal', 'stripe']),
             'user_id' => User::factory(),
             'status' => $this->faker->randomElement(['new', 'processing', 'completed', 'failed']),
+            'payment_link' => $this->faker->url,
         ];
     }
 }
+
