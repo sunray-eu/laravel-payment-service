@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Services;
+
 use App\Traits\ConsumesExternalServices;
 use Illuminate\Http\Request;
 
@@ -17,7 +19,7 @@ abstract class PaywallService
      *
      * @var string
      */
-    abstract protected string $baseUri;
+    protected string $baseUri;
 
     /**
      * Resolves the authorization for the external service request.
@@ -41,9 +43,11 @@ abstract class PaywallService
      * Generates a payment link for the given request.
      *
      * @param Request $request The HTTP request containing the payment details.
+     * @param string $returnUrl The URL that should be called after payment proceeded.
+     * @param string $cancelUrl The URL that should be called after payment cancelled or failed.
      * @return string The generated payment link.
      */
-    abstract public function getPaymentLink(Request $request): string;
+    abstract public function getPaymentLink(Request $request, string $returnUrl, string $cancelUrl): string;
 
     /**
      * Handles the approval process for the payment.

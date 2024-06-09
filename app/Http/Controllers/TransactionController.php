@@ -64,6 +64,7 @@ class TransactionController extends Controller
 
             if (!isset($validTransitions[$transaction->status]) || !in_array($data['status'], $validTransitions[$transaction->status])) {
                 return response()->json([
+                    'status' => 'error',
                     'error' => 'Invalid transition',
                     'message' => 'Cannot change status from ' . $transaction->status . ' to ' . $data['status']
                 ], 422);
@@ -74,10 +75,11 @@ class TransactionController extends Controller
             if ($data['status'] === 'completed') {
                 $paymentService = $this->paymentPlatformResolver->resolveService($transaction->provider);
                 $approvalResult = $paymentService->handleApproval();
-                if (empty($approvalResult['status']) || $approvalResult['status'] !== 'success') {
+                if (empty($approvalResult['status']) || $approvalResult['status'] === 'failed') {
                     $response = [
+                        'status' => 'error',
                         'error' => 'Approval failed',
-                        'message' => $approvalResult['message'],
+                        'message' => $approvalResult['message'] ?? null,
                     ];
                     $this->transactionRepository->updateStatus($transaction, 'failed');
                 } elseif ($approvalResult['status'] === 'requires_action') {
@@ -91,7 +93,7 @@ class TransactionController extends Controller
                     $response = [
                         'status' => 'success',
                         'message' => 'Transaction completed successfully',
-                        'transaction' => $transaction,
+                        'transaction' => $transaction->toJson(),
                     ];
                 }
             } else {
@@ -99,7 +101,7 @@ class TransactionController extends Controller
                 $response = [
                     'status' => 'success',
                     'message' => 'Transaction status updated successfully',
-                    'transaction' => $transaction,
+                    'transaction' => $transaction->toJson(),
                 ];
             }
 
@@ -108,6 +110,7 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             Log::error('Failed to update transaction status', ['exception' => $e->getMessage()]);
             return response()->json([
+                'status' => 'error',
                 'message' => 'Failed to update transaction status',
                 'error' => $e->getMessage()
             ], 500);

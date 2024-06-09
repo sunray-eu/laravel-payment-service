@@ -46,6 +46,8 @@ class PaymentController extends Controller
             'currency' => 'required|string|size:3',
             'provider' => 'required|string',
             'payment_platform' => 'required|string',
+            'return_url' => 'required|string',
+            'cancel_url' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -60,7 +62,7 @@ class PaymentController extends Controller
         try {
             // Resolve the payment service and create the payment link
             $paymentService = $this->paymentPlatformResolver->resolveService($data['payment_platform']);
-            $paymentLink = $paymentService->getPaymentLink($request);
+            $paymentLink = $paymentService->getPaymentLink($request, $data['return_url'], $data['cancel_url']);
 
             // Create a new transaction record
             $transaction = $this->transactionRepository->create([

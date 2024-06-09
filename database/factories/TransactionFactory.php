@@ -20,7 +20,7 @@ class TransactionFactory extends Factory
         return [
             'amount' => $this->faker->randomFloat(2, 1, 1000),
             'currency' => $this->faker->currencyCode,
-            'provider' => $this->faker->randomElement(['paypal', 'stripe']),
+            'provider' => $this->faker->randomElement(['paypal', 'samplepaywall']),
             'user_id' => User::factory(),
             'status' => $this->faker->randomElement(['new', 'processing', 'completed', 'failed']),
             'payment_link' => $this->faker->url,

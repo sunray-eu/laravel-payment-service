@@ -42,11 +42,11 @@ return [
         'class' => App\Services\PayPalService::class,
     ],
 
-    'stripe' => [
-        'base_uri' => env('STRIPE_BASE_URI'),
-        'key' => env('STRIPE_KEY'),
-        'secret' => env('STRIPE_SECRET'),
-        'class' => App\Services\StripeService::class,
+    'samplepaywall' => [
+        'base_uri' => env('SAMPLEPAYWALL_BASE_URI'),
+        'key' => env('SAMPLEPAYWALL_KEY'),
+        'secret' => env('SAMPLEPAYWALL_SECRET'),
+        'class' => App\Services\SampleService::class,
     ],
 
 ];

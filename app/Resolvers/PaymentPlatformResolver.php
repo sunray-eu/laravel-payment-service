@@ -2,7 +2,7 @@
 
 namespace App\Resolvers;
 
-use PaywallService;
+use App\Services\PaywallService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Container\BindingResolutionException;
 

@@ -3,7 +3,8 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
-use PaywallService;
+use App\Services\PaywallService;
+use Illuminate\Support\Facades\Config;
 
 /**
  * Class PayPalService
@@ -13,13 +14,6 @@ use PaywallService;
  */
 class PayPalService extends PaywallService
 {
-    /**
-     * The base URI for the PayPal API.
-     *
-     * @var string
-     */
-    protected $baseUri;
-
     /**
      * The client ID for PayPal API authentication.
      *
@@ -35,21 +29,13 @@ class PayPalService extends PaywallService
     protected $clientSecret;
 
     /**
-     * PayPal plans configuration.
-     *
-     * @var array
-     */
-    protected $plans;
-
-    /**
      * PayPalService constructor.
      */
     public function __construct()
     {
-        $this->baseUri = config('services.paypal.base_uri');
-        $this->clientId = config('services.paypal.client_id');
-        $this->clientSecret = config('services.paypal.client_secret');
-        $this->plans = config('services.paypal.plans');
+        $this->baseUri = Config::get('services.paypal.base_uri') ?? 'https://api.sandbox.paypal.com';
+        $this->clientId = Config::get('services.paypal.client_id') ?? '';
+        $this->clientSecret = Config::get('services.paypal.client_secret') ?? '';
     }
 
     /**
@@ -91,11 +77,13 @@ class PayPalService extends PaywallService
      * Generates a payment link for the given request.
      *
      * @param Request $request The HTTP request containing the payment details.
+     * @param string $returnUrl The URL that should be called after payment proceeded.
+     * @param string $cancelUrl The URL that should be called after payment cancelled or failed.
      * @return string The generated payment link.
      */
-    public function getPaymentLink(Request $request): string
+    public function getPaymentLink(Request $request, string $returnUrl, string $cancelUrl): string
     {
-        $order = $this->createOrder($request->value, $request->currency);
+        $order = $this->createOrder($request->value, $request->currency, $returnUrl, $cancelUrl);
 
         $orderLinks = collect($order->links);
         $approve = $orderLinks->where('rel', 'approve')->first();
@@ -120,7 +108,7 @@ class PayPalService extends PaywallService
             if (empty($payment) || !empty($payment->error)) {
                 return [
                     'status' => 'failed',
-                    'message' => $payment['error'] ?? 'We cannot capture the payment. Try again, please'
+                    'message' => $payment->error ?? 'We cannot capture the payment. Try again, please'
                 ];
             }
 
@@ -148,9 +136,11 @@ class PayPalService extends PaywallService
      *
      * @param float $value The value of the order.
      * @param string $currency The currency of the order.
+     * @param string $returnUrl The URL that should be called after payment proceeded.
+     * @param string $cancelUrl The URL that should be called after payment cancelled or failed.
      * @return mixed The created order.
      */
-    public function createOrder($value, $currency)
+    public function createOrder($value, $currency, string $returnUrl, string $cancelUrl)
     {
         return $this->makeRequest(
             'POST',
@@ -170,8 +160,8 @@ class PayPalService extends PaywallService
                     'brand_name' => config('app.name'),
                     'shipping_preference' => 'NO_SHIPPING',
                     'user_action' => 'PAY_NOW',
-                    'return_url' => route('approval'),
-                    'cancel_url' => route('cancelled'),
+                    'return_url' => $returnUrl,
+                    'cancel_url' => $cancelUrl,
                 ]
             ],
             [],
@@ -185,7 +175,7 @@ class PayPalService extends PaywallService
      * @param string $approvalId The approval ID.
      * @return mixed The captured payment.
      */
-    private function capturePayment($approvalId)
+    public function capturePayment($approvalId)
     {
         return $this->makeRequest(
             'POST',

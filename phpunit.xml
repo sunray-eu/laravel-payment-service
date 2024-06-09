@@ -30,4 +30,9 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
+    <coverage includeUncoveredFiles="true">
+        <report>
+            <html outputDirectory="tests/Coverage/html"/>
+        </report>
+    </coverage>
 </phpunit>
