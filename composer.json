@@ -1,9 +1,15 @@
 {
     "name": "sunray-eu/laravel-payment-service",
     "type": "project",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "description": "Sample app of payment service with multiple providers",
-    "keywords": ["laravel", "framework", "backend", "paywall", "payment"],
+    "keywords": [
+        "laravel",
+        "framework",
+        "backend",
+        "paywall",
+        "payment"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.3",
