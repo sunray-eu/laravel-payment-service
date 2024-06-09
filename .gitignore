@@ -21,4 +21,6 @@ yarn-error.log
 
 # Coverage report
 tests/Coverage
+
+# Mac files
 **/.DS_Store
