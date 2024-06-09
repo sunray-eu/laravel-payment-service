@@ -1,0 +1,14 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "ci:versionup": "tsx scripts/bump-composer.ts",
+        "ci:versionup:major": "npm run ci:versionup major",
+        "ci:versionup:minor": "npm run ci:versionup minor",
+        "ci:versionup:patch": "npm run ci:versionup patch"
+    },
+    "devDependencies": {
+        "@types/node": "^20.14.1",
+        "tsx": "^4.11.2"
+    }
+}

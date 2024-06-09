@@ -1,8 +1,9 @@
 {
-    "name": "laravel/laravel",
+    "name": "sunray-eu/laravel-payment-service",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "version": "0.0.0",
+    "description": "Sample app of payment service with multiple providers",
+    "keywords": ["laravel", "framework", "backend", "paywall", "payment"],
     "license": "MIT",
     "require": {
         "php": "^8.3",
